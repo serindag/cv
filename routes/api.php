@@ -5,14 +5,17 @@ use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\CareerController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ContactController;
+use App\Http\Controllers\Api\EducationController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\ReferanceController;
+use App\Http\Controllers\Api\SiteSettingController;
+use App\Http\Controllers\Api\SliderController;
+use App\Http\Controllers\Api\SocialMediaController;
 use App\Http\Controllers\Api\TagController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
-
-
+use App\Models\SiteSetting;
 
 
 Route::group(['prefix'=>'auth','as'=>'auth'],function(){
@@ -21,13 +24,12 @@ Route::group(['prefix'=>'auth','as'=>'auth'],function(){
         return $request->user();
     })->middleware('auth:sanctum');
     
-    Route::controller(UserController::class)->group(function(){
-        Route::post('login','login');
-        Route::post('register','register');
-
-        Route::post('forgot-password','sendResetLinkEmail');
-        Route::post('reset-password','resetPassword');
-    });
+     
+        Route::post('login',[UserController::class,'login']);
+        Route::post('register', [UserController::class,'register']);
+        Route::post('forgot-password', [UserController::class,'sendResetLinkEmail']);
+        Route::post('reset-password', [UserController::class,'resetPassword']);
+  
     
 
 
@@ -35,6 +37,7 @@ Route::group(['prefix'=>'auth','as'=>'auth'],function(){
 
 Route::group(['middleware'=>['auth:sanctum','is_admin']],function(){
 
+   
     // Hakkında
 
     Route::get('/about',[AboutController::class,'index']);
@@ -68,18 +71,43 @@ Route::group(['middleware'=>['auth:sanctum','is_admin']],function(){
     Route::post('/category/store',[CategoryController::class,'store']);
     Route::post('/category/{id}/update',[CategoryController::class,'update']);
 
-    /* Blog */
-    Route::get('/blogs',[BlogController::class,'index']);
-    Route::get('/blog/{id}',[BlogController::class,'edit']);
-    Route::post('/blog/store',[BlogController::class,'store']);
-    Route::post('/blog/{id}/update',[BlogController::class,'update']);
+   
 
-     
+    /* Project */
+    Route::get('/projects',[ProjectController::class,'index']);
+    Route::get('/project/{id}',[ProjectController::class,'edit']);
+    Route::post('/project/store',[ProjectController::class,'store']);
+    Route::post('/project/{id}/update',[ProjectController::class,'update']);
+
+      //Kariyer
+    Route::get('/educations',[EducationController::class,'index']);
+    Route::post('/education/store',[EducationController::class,'store']);
+    Route::post('/education/{id}/update',[EducationController::class,'update']);
+
+    /* slider */
+    Route::get('/sliders',[SliderController::class,'index']);
+    Route::get('/slider/{id}',[SliderController::class,'edit']);
+    Route::post('/slider/store',[SliderController::class,'store']);
+    Route::post('/slider/{id}/update',[SliderController::class,'update']);
+
+    /* Social Media */
+    Route::get('/socialMedias',[SocialMediaController::class,'index']);
+    Route::get('/socialMedia/{id}',[SocialMediaController::class,'edit']);
+    Route::post('/socialMedia/store',[SocialMediaController::class,'store']);
+    Route::post('/socialMedia/{id}/update',[SocialMediaController::class,'update']);
+    Route::post('/socialMedia/sortable',[SocialMediaController::class,'order']);
 
 });
 
-/* Project */
-Route::get('/projects',[ProjectController::class,'index']);
-Route::get('/project/{id}',[ProjectController::class,'edit']);
-Route::post('/project/store',[ProjectController::class,'store']);
-Route::post('/project/{id}/update',[ProjectController::class,'update']);
+
+/* Site Setting */
+Route::get('/siteSettings',[SiteSettingController::class,'index']);
+Route::get('/siteSetting/{id}',[SiteSettingController::class,'edit']);
+Route::post('/siteSetting/store',[SiteSettingController::class,'store']);
+Route::post('/siteSetting/{id}/update',[SiteSettingController::class,'update']);
+
+ /* Blog */
+ Route::get('/blogs',[BlogController::class,'index']);
+ Route::get('/blog/{id}',[BlogController::class,'edit']);
+ Route::post('/blog/store',[BlogController::class,'store']);
+ Route::post('/blog/{id}/update',[BlogController::class,'update']);
